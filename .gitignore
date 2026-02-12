@@ -1,0 +1,41 @@
+# ==========================
+# Logs
+# ==========================
+logs/
+*.log
+
+# ==========================
+# Secrets / Credentials
+# ==========================
+*.env
+*.key
+*.pfx
+*.cer
+*.crt
+secrets/
+**/*password*
+**/*secret*
+**/*credential*
+
+# ==========================
+# PowerShell
+# ==========================
+*.psd1
+!src/*.psd1   # Allow module manifest if we create one later
+
+# ==========================
+# VS Code
+# ==========================
+.vscode/
+
+# ==========================
+# JetBrains
+# ==========================
+.idea/
+
+# ==========================
+# OS Files
+# ==========================
+.DS_Store
+Thumbs.db
+desktop.ini
