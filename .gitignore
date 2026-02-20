@@ -20,8 +20,6 @@ secrets/
 # ==========================
 # PowerShell
 # ==========================
-*.psd1
-!src/*.psd1   # Allow module manifest if we create one later
 
 # ==========================
 # VS Code

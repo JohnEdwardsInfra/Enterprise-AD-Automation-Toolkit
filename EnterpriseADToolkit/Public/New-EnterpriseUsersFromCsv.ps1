@@ -9,24 +9,47 @@ function New-EnterpriseUsersFromCsv {
         [SecureString]$DefaultPassword,
 
         [Parameter()]
-        [string]$LogPath = (Join-Path $PSScriptRoot "..\..\logs\EnterpriseADToolkit.log")
+        [string]$LogPath = "$PSScriptRoot\..\..\logs\EnterpriseADToolkit.log",
+        
+        [Parameter()]
+        [switch]$PreviewOnly
     )
 
-    # AD module check (lab-safe fail)
-    if (-not (Get-Module -ListAvailable -Name ActiveDirectory)) {
-        throw "ActiveDirectory module not found. Install RSAT Active Directory tools to use this function."
+    # AD module check (allow PreviewOnly to still work)
+    $adAvailable = [bool](Get-Module -ListAvailable -Name ActiveDirectory)
+
+    if (-not $adAvailable -and -not $PreviewOnly) {
+    throw "ActiveDirectory module not found. Install RSAT Active Directory tools or run with -PreviewOnly."
     }
 
+    if ($adAvailable) {
     Import-Module ActiveDirectory -ErrorAction Stop
-
-    if (-not $DefaultPassword) {
-        # Lab-safe default
-        $DefaultPassword = ConvertTo-SecureString "P@ssw0rd!ChangeMe" -AsPlainText -Force
     }
 
     Write-Log -Message "Starting bulk user provisioning from CSV: $CsvPath" -Level "INFO" -LogPath $LogPath
 
     $users = Import-Csv -Path $CsvPath
+
+    if ($PreviewOnly) {
+    Write-Log -Message "PreviewOnly enabled. No AD changes will be made." -Level "WARN" -LogPath $LogPath
+
+    $preview = foreach ($u in $users) {
+        foreach ($field in @("GivenName","Surname","SamAccountName","UserPrincipalName","OU")) {
+            if (-not $u.$field) { throw "Missing required field '$field' in CSV row." }
+        }
+
+        [pscustomobject]@{
+            Name              = "$($u.GivenName) $($u.Surname)"
+            SamAccountName    = $u.SamAccountName
+            UserPrincipalName = $u.UserPrincipalName
+            OU                = $u.OU
+            Enabled           = if ($u.PSObject.Properties.Name -contains "Enabled") { $u.Enabled } else { $true }
+        }
+    }
+
+    return $preview
+}
+
 
     foreach ($u in $users) {
         try {
