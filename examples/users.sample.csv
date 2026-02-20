@@ -1,3 +1,3 @@
-"GivenName,Surname,SamAccountName,UserPrincipalName,OU,Enabled"
-"John,Runner,jrunner,jrunner@example.local,""OU=Users,OU=Corp,DC=example,DC=local"",true"
-"Sara,Admin,sadmin,sadmin@example.local,""OU=Users,OU=Corp,DC=example,DC=local"",true"
+GivenName,Surname,SamAccountName,UserPrincipalName,OU,Enabled
+John,Runner,jrunner,jrunner@example.local,"OU=Users,OU=Corp,DC=example,DC=local",TRUE
+Sara,Adam,sadam,sadam@example.local,"OU=Users,OU=Corp,DC=example,DC=local",TRUE
