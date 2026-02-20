@@ -12,7 +12,7 @@ function New-EnterpriseUsersFromCsv {
         [string]$LogPath = (Join-Path $PSScriptRoot "..\..\logs\EnterpriseADToolkit.log")
     )
 
-    # Ensure AD module exists
+    # AD module check (lab-safe fail)
     if (-not (Get-Module -ListAvailable -Name ActiveDirectory)) {
         throw "ActiveDirectory module not found. Install RSAT Active Directory tools to use this function."
     }
@@ -20,7 +20,7 @@ function New-EnterpriseUsersFromCsv {
     Import-Module ActiveDirectory -ErrorAction Stop
 
     if (-not $DefaultPassword) {
-        # Lab-safe default. Users are forced to change at next logon.
+        # Lab-safe default
         $DefaultPassword = ConvertTo-SecureString "P@ssw0rd!ChangeMe" -AsPlainText -Force
     }
 
